@@ -1,0 +1,64 @@
+setup_local_reg() {
+  if ! docker network inspect learn-docker &>/dev/null; then
+    echo 'create network learn-docker'
+    docker network create learn-docker
+  fi
+  if docker inspect registry-test &>/dev/null; then
+    echo 'stop and remove registry-test'
+    docker stop registry-test
+    docker rm registry-test
+  fi
+
+  echo 'run registry-test'
+  docker run --restart always -d -p 5000:5000 --net learn-docker --name registry-test registry:2
+
+  # test image 1
+  echo 'busybox:1.36 -> localhost:5000/mirror/library/busybox:1.36'
+  docker pull busybox:1.36
+  docker tag busybox:1.36 localhost:5000/mirror/library/busybox:1.36
+  docker push localhost:5000/mirror/library/busybox:1.36
+
+  # test image 2 - intentionally omit library project
+  echo 'alpine:3.15.10 -> localhost:5000/mirror/alpine:3.15.10'
+  docker pull alpine:3.15.10
+  docker tag alpine:3.15.10 localhost:5000/mirror/alpine:3.15.10
+  docker push localhost:5000/mirror/library/alpine:3.15.10
+
+  # test image 3 - rename randomly
+  echo 'curlimages/curl:8.3.0 -> localhost:5000/oopsi:0.0.1'
+  docker pull curlimages/curl:8.3.0
+  docker tag curlimages/curl:8.3.0 localhost:5000/oopsi:0.0.1
+  docker push localhost:5000/oopsi:0.0.1
+}
+
+create_builder() {
+  if [ -z "$1" ]; then
+    echo wrong arguments
+    return 1
+  fi
+  bname=$(basename "$1")
+  name="${bname%.*}"
+  docker buildx create --use --bootstrap \
+    --name "$name" \
+    --driver docker-container \
+    --driver-opt network=learn-docker \
+    --config "$1"
+}
+
+test_build() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo wrong arguments
+    exit 1
+  fi
+  docker buildx build \
+    --progress plain \
+    --builder "$1" \
+    --no-cache \
+    --pull \
+    -t "$2" \
+    -
+}
+
+clean_cache() {
+  docker buildx prune -af
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env expect --
+spawn ./fakessh.sh {*}$argv
+expect "password:"
+send -- "test\r"
+interact

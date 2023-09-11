@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Append leading spaces
+# Usage: command | _i
+_i() {
+  sed 's/^/  /'
+}
+
+
+print_compvars() {
+  echo '[fn print_compvars]'
+  { for w in LINE POINT KEY TYPE WORDS CWORD; do
+    local name=COMP_${w}
+    if ! declare -p ${name} 2>/dev/null; then
+      echo "${name} not declared"
+    fi
+  done } | _i
+}
+

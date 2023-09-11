@@ -1,0 +1,5 @@
+#!/usr/bin/env expect --
+spawn ssh -p 2222 test@127.0.0.1 {*}$argv
+expect "password:"
+send -- "foobar\r"
+interact

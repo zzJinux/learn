@@ -1,0 +1,20 @@
+foo() {
+  echo '[func foo body]'
+  echo 'Setting foo_localvar'
+  local foo_localvar='foo_localvar'
+
+  . sourcefile
+
+  echo '[func foo body]'
+  declare -p foo_localvar
+  declare -p sourcefile_var
+  declare -p sourcefile_localvar
+}
+
+echo '[top]'
+echo 'call foo'
+foo
+
+declare -p foo_localvar
+declare -p sourcefile_var
+declare -p sourcefile_localvar

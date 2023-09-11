@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: Managed PostgreSQL service
+  version: 0.0.0
+tags: []
+paths:
+  /instance-groups:
+    get:
+      operationId: InstanceGroups_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstanceGroup'
+    post:
+      operationId: InstanceGroups_create
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstanceGroup'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstanceGroup'
+components:
+  schemas:
+    InstanceGroup:
+      type: object
+      required:
+        - apiVersion
+        - name
+        - resourceVersion
+        - generation
+        - spec
+        - status
+        - phase
+        - nextInstanceOrdinal
+      properties:
+        apiVersion:
+          type: string
+        name:
+          type: string
+        resourceVersion:
+          type: integer
+          format: int64
+        generation:
+          type: integer
+          format: int64
+        spec:
+          $ref: '#/components/schemas/InstanceGroupSpec'
+        status:
+          $ref: '#/components/schemas/InstanceGroupStatus'
+        phase:
+          $ref: '#/components/schemas/InstanceGroupPhase'
+        nextInstanceOrdinal:
+          type: integer
+          format: int64
+    InstanceGroupComputeSpec:
+      type: object
+      required:
+        - flavorId
+      properties:
+        flavorId:
+          type: string
+    InstanceGroupPhase:
+      type: string
+      enum:
+        - Provisioning
+        - Active
+    InstanceGroupSpec:
+      type: object
+      required:
+        - compute
+      properties:
+        compute:
+          $ref: '#/components/schemas/InstanceGroupComputeSpec'
+    InstanceGroupStatus:
+      type: object
+      required:
+        - endpoints
+      properties:
+        endpoints:
+          type: array
+          items:
+            type: string

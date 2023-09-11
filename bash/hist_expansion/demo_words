@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+echo '$ echo arg1 arg2'
+
+# enable history expansion explicitly
+set -o histexpand -o history
+alias noop=:
+noop arg1 arg2 &>/dev/null
+results=(!:0 !:1 !:2)
+echo '!:0 = '${results[0]}
+echo '!:1 = '${results[1]}
+echo '!:2 = '${results[2]}

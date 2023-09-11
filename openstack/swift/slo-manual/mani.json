@@ -1,0 +1,12 @@
+[
+    {
+        "path": "/adler/128B.dat/001",
+        "etag": "3cdde70a0996596ca3b700aa0d2e5bab",
+        "size_bytes": 64
+    },
+    {
+        "path": "/adler/128B.dat/002",
+        "etag": "3cdde70a0996596ca3b700aa0d2e5bab",
+        "size_bytes": 64
+    }
+]

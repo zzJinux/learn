@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+: begin
+
+echo Default delimit
+
+(
+read a <<<ONE
+echo ${a@A}
+
+read b <<<$'ONE\nTWO'
+echo ${b@A}
+
+# On empty string input
+read c <<<''
+if declare -p c 2>- >-; then
+  echo ${c@A}
+else
+  echo "c is unset"
+fi
+)
+
+: end
+
+
+: begin
+
+(
+echo Custom delimit
+
+read -d q a <<<ONEqTWO
+echo ${a@A}
+
+# only the first character is used
+read -d qa b <<<ONEqTWOqa
+echo ${b@A}
+)
+
+: end

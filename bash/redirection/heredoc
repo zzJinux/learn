@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+: begin
+
+set -- ONE TWO 'TH REE' 'FO UR'
+
+cat <<EOF
+args: $@
+EOF
+
+cat <<EOF
+args: \$@
+EOF
+
+cat <<EOF
+args: "$@"
+EOF
+
+cat <<EOF
+args: "\$@"
+EOF
+
+: end
+
+
+: begin
+
+set -- ONE TWO 'TH REE' 'FO UR'
+
+# Embedding words of parameters (or array)
+cat <<EOF
+$@
+$(printf "%q " "$@")
+EOF
+
+: end

@@ -1,0 +1,121 @@
+Docker Desktop host ipaddr: 172.30.1.24
+echo1 container ipaddr: 172.17.0.2
+echo2 container ipaddr: 172.17.0.3
+default bridge gateway (docker0): 172.17.0.1
+root namespace gateway: 192.168.65.1
+host.docker.internal: 192.168.65.254
+gateway.docker.internal: 192.168.65.254
+
+=== From the Docker Desktop host
+desktop_curl localhost:9001
+172.17.0.2:5678 <= 192.168.65.1:29028
+
+desktop_curl localhost:9002
+172.17.0.3:5678 <= 172.17.0.1:46900
+
+desktop_curl 172.30.1.24:9001
+172.17.0.2:5678 <= 192.168.65.1:29029
+
+desktop_curl 172.30.1.24:9002
+curl: (7) Failed to connect to 172.30.1.24 port 9002 after 0 ms: Couldn't connect to server
+
+=== From the default bridge
+
+default_bridge_curl localhost:9001
+curl: (7) Failed to connect to localhost port 9001 after 0 ms: Couldn't connect to server
+
+default_bridge_curl localhost:9002
+curl: (7) Failed to connect to localhost port 9002 after 0 ms: Couldn't connect to server
+
+default_bridge_curl 172.17.0.2:5678
+172.17.0.2:5678 <= 172.17.0.4:49806
+
+default_bridge_curl 172.17.0.3:5678
+172.17.0.3:5678 <= 172.17.0.4:44322
+
+default_bridge_curl host.docker.internal:9001
+172.17.0.2:5678 <= 192.168.65.1:29030
+
+default_bridge_curl host.docker.internal:9002
+172.17.0.3:5678 <= 172.17.0.1:46914
+
+=== From an user bridge
+
+user_bridge_curl localhost:9001
+curl: (7) Failed to connect to localhost port 9001 after 0 ms: Couldn't connect to server
+
+user_bridge_curl localhost:9002
+curl: (7) Failed to connect to localhost port 9002 after 0 ms: Couldn't connect to server
+
+user_bridge_curl 172.17.0.2:5678
+curl: (28) Failed to connect to 172.17.0.2 port 5678 after 1019 ms: Timeout was reached
+
+user_bridge_curl 172.17.0.3:5678
+curl: (28) Failed to connect to 172.17.0.3 port 5678 after 1000 ms: Timeout was reached
+
+user_bridge_curl host.docker.internal:9001
+172.17.0.2:5678 <= 192.168.65.1:29031
+
+user_bridge_curl host.docker.internal:9002
+172.17.0.3:5678 <= 172.17.0.1:54434
+
+=== From an user internal-bridge
+
+user_intbridge_curl localhost:9001
+curl: (7) Failed to connect to localhost port 9001 after 0 ms: Couldn't connect to server
+
+user_intbridge_curl localhost:9002
+curl: (7) Failed to connect to localhost port 9002 after 0 ms: Couldn't connect to server
+
+user_intbridge_curl 172.17.0.2:5678
+curl: (28) Failed to connect to 172.17.0.2 port 5678 after 1000 ms: Timeout was reached
+
+user_intbridge_curl 172.17.0.3:5678
+curl: (28) Failed to connect to 172.17.0.3 port 5678 after 1002 ms: Timeout was reached
+
+user_intbridge_curl host.docker.internal:9001
+curl: (28) Resolving timed out after 1000 milliseconds
+
+user_intbridge_curl host.docker.internal:9002
+curl: (28) Resolving timed out after 1000 milliseconds
+
+=== From the "host" network
+
+hostnet_curl localhost:9001
+172.17.0.2:5678 <= 172.17.0.1:58562
+
+hostnet_curl localhost:9002
+172.17.0.3:5678 <= 172.17.0.1:38718
+
+hostnet_curl 172.17.0.2:5678
+172.17.0.2:5678 <= 172.17.0.1:40610
+
+hostnet_curl 172.17.0.3:5678
+172.17.0.3:5678 <= 172.17.0.1:57748
+
+hostnet_curl host.docker.internal:9001
+172.17.0.2:5678 <= 192.168.65.1:29032
+
+hostnet_curl host.docker.internal:9002
+172.17.0.3:5678 <= 172.17.0.1:38730
+
+=== From the root ns network
+
+rootnet_curl localhost:9001
+curl: (7) Failed to connect to localhost port 9001 after 0 ms: Couldn't connect to server
+
+rootnet_curl localhost:9002
+curl: (7) Failed to connect to localhost port 9002 after 0 ms: Couldn't connect to server
+
+rootnet_curl 172.17.0.2:5678
+curl: (28) Failed to connect to 172.17.0.2 port 5678 after 1001 ms: Timeout was reached
+
+rootnet_curl 172.17.0.3:5678
+curl: (28) Failed to connect to 172.17.0.3 port 5678 after 1001 ms: Timeout was reached
+
+rootnet_curl host.docker.internal:9001
+172.17.0.2:5678 <= 192.168.65.1:29033
+
+rootnet_curl host.docker.internal:9002
+172.17.0.3:5678 <= 172.17.0.1:58726
+

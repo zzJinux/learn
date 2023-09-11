@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# https://stackoverflow.com/a/41069638
+
+# Usage: catch STDOUT STDERR cmd args..
+catch()
+{
+eval "$({
+__2="$(
+  { __1="$("${@:3}")"; } 2>&1;
+  ret=$?;
+  printf '%q=%q\n' "$1" "$__1" >&2;
+  exit $ret
+  )";
+ret="$?";
+printf '%s=%q\n' "$2" "$__2" >&2;
+printf '( exit %q )' "$ret" >&2;
+} 2>&1 )";
+}
+
+dummy_echo() {
+  echo '@echo I am stdout.'
+  echo '@echo I am stderr.' >&2
+}
+
+
+dummy_printf() {
+  printf '@printf I am stdout.'
+  printf '@printf I am stderr.' >&2
+}
+
+catch STDOUT STDERR dummy_echo
+
+echo '<stdout>'
+printf "$STDOUT"
+echo '</stdout>'
+
+echo '<stderr>'
+printf "$STDERR"
+echo '</stderr>'
+
+catch STDOUT STDERR dummy_printf
+
+echo '<stdout>'
+printf "$STDOUT"
+echo '</stdout>'
+
+echo '<stderr>'
+printf "$STDERR"
+echo '</stderr>'

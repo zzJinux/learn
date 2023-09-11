@@ -1,0 +1,10 @@
+echo '[script sourcefile]'
+declare -p foo_localvar
+
+echo 'Setting sourcefile_var'
+sourcefile_var='sourcefile_var'
+echo 'Setting sourcefile_localvar'
+local sourcefile_localvar='sourcefile_localvar'
+
+declare -p sourcefile_var
+declare -p sourcefile_localvar

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+: begin
+
+a='Hello, World!'
+
+# normal variable
+b=a
+echo "${!b}"
+
+# nameref variable
+declare -n b=a
+echo '$b'" == $b"
+echo '${!b}'" == ${!b}"
+
+: end
+
+
+: begin
+
+letters=(a b c d)
+
+# indirectly get a single element
+fn()
+{
+    elem2=$1"[2]"
+    echo ${!elem2}
+}
+
+fn letters
+
+# indrectly get all elements
+fn()
+{
+    all=$1"[*]"
+    echo ${!all}
+}
+
+fn letters
+
+# indirectly get the length (error)
+fn()
+{
+    all="#"$1"[*]"
+    echo ${!all}
+}
+
+fn letters
+
+# indireclty get the length (workaround)
+fn()
+{
+    local -a 'arraykeys=("${!'"$1"'[@]}")'
+    echo ${arraykeys[*]}
+    echo ${#arraykeys[*]}
+}
+
+fn letters
+
+: end

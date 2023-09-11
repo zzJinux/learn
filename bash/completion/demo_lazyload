@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+. util
+
+first_compfn() {
+  {
+    echo '[fn first_compfn]'
+    print_compvars | _i
+    complete -F second_compfn qqqq
+  } >> out_lazyload.txt
+  COMPREPLY+=(foo) # discarded
+  return 124
+}
+
+second_compfn() {
+  {
+    echo '[fn second_compfn]'
+    print_compvars | _i
+  } >> out_lazyload.txt
+  COMPREPLY+=(bar)
+}
+
+init() {
+  : >out_lazyload.txt
+  complete -r qqqq &>/dev/null
+
+  complete -F first_compfn qqqq
+}
+init
+
+# qqqq|<TAB> produces: bar

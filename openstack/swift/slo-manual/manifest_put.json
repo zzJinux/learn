@@ -1,0 +1,12 @@
+[
+    {
+        "path": "/adler-test-segments/128B.dat_seg1",
+        "etag": "3cdde70a0996596ca3b700aa0d2e5bab",
+        "size_bytes": 64
+    },
+    {
+        "path": "/adler-test-segments/128B.dat_seg2",
+        "etag": "3cdde70a0996596ca3b700aa0d2e5bab",
+        "size_bytes": 64
+    }
+]

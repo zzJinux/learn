@@ -1,0 +1,8 @@
+debug = true
+[registry."docker.io"]
+  http = true
+  insecure = true
+  mirrors = ["http://registry-test:5000/mirror"]
+[registry."registry-test:5000"]
+  http = true
+  insecure = true
