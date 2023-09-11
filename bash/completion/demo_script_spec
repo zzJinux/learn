@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+. util
+
+# COMMAND == the name of the command whose arguments are being completed
+# WORD == the word being completed
+# WORD_PRECEDING == the word preceding the word being completed
+
+comp_func() {
+  {
+    echo '[fn comp_func]'
+    echo '$1 (COMMAND) = '"$1"
+    echo '$2 (WORD) = '"$2"
+    echo '$3 (WORD_PRECEDING) = '"$3"
+    print_compvars | _i
+  } >> out_func_and_script.txt
+  COMPREPLY+=(aaaaa)
+}
+
+read -rd '' comp_script <<'EOF'
+. util
+{
+  echo '[fn comp_script]'
+  echo '$1 (COMMAND) = '"$1"
+  echo '$2 (WORD) = '"$2"
+  echo '$3 (WORD_PRECEDING) = '"$3"
+  print_compvars | _i
+} >> out_func_and_script.txt
+echo bbbbb
+EOF
+
+init() {
+  : >out_func_and_script.txt
+  complete -r zxzxzx &>/dev/null
+
+  # "-C SCRIPT" has a bit unusual interface. SCRIPT is intepreted as a bash script snippet.
+  # Bash appends three properly-quoted arguments to this snippet: COMMAND, WORD and WORD_PRECEDING.
+  # The final command line executed that produces a completion list is:
+  #   SCRIPT COMMAND WORD WORD_PRECEDING
+  #
+  # "asdf" exists solely to fill $0 so that COMMAND takes $1.
+  complete -F comp_func -C "bash -c ${comp_script@Q} asdf" zxzxzx
+}
+
+init
+
+# zxzxzx|<TAB> produces: aaaaa bbbbb

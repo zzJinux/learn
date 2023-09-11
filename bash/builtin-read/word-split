@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+: begin
+
+(
+# Assign to multiple names. Default
+read a b c d <<<$' \tONE\t TWO \tTHREE  \t\tFOUR\t\t'
+echo "${a@A}, ${b@A}, ${c@A}, ${d@A}"
+)
+
+(
+# len(names) > len(words)
+read a b c d <<<$'\t ONE\t TWO \tTHREE\t'
+echo "${a@A}, ${b@A}, ${c@A}, ${d@A}"
+)
+
+(
+# len(names) < len(words)
+read a b <<<$'\t ONE\t TWO\t  \t\tTHREE  '
+echo "${a@A}, ${b@A}"
+)
+
+: end
+
+
+: begin
+
+(
+# IFS='*^'
+IFS=*^ read a b c d e <<<$'\taaa^bbb*ccc^*^ddd\t'
+for i in a b c d e; do
+  printf "${!i@A}, "
+done
+echo
+)
+
+(
+# IFS='\t*^'
+IFS=$'\t*^' read a b c d e f g h <<<$'\t\t \t\taaa \t\t^\t\t bbb\t ^ \tccc \t\t'
+for i in a b c d e f g; do
+  printf "${!i@A}, "
+done
+echo
+)
+
+: end
+
+
+: begin
+(
+# Assign to multiple names. IFS=<newline>, delimiter=<NUL>
+IFS=$'\n' read -d '' a b c <<<$'ONE\nTWO\nTHREE\n'
+echo $a $b $c
+)
+: end

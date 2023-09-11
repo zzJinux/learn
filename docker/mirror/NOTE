@@ -1,0 +1,103 @@
+create_builder testbuilder1 testbuilder1.toml
+# turn off Internet
+test_build testbuilder1 aaa < from_dockerio_busybox.Dockerfile  -> not working?!!?
+
+-- testbuilder1.toml --
+debug = true
+[registry."docker.io"]
+  mirrors = ["registry-test:5000/mirror"]
+[registry."registry-test:5000"]
+  http = true
+
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+[registry."docker.io"]
+  mirrors = ["registry-test:5000/mirror"]
+[registry."registry-test:5000"]
+  http = true
+  insecure = true
+
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+[registry."docker.io"]
+  mirrors = ["registry-test:5000/mirror"]
+  http = true
+  insecure = true
+[registry."registry-test:5000"]
+  http = true
+  insecure = true
+
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+insecure-entitlements = [ "security.insecure" ]
+[registry."docker.io"]
+  mirrors = ["registry-test:5000/mirror"]
+[registry."registry-test:5000"]
+  http = true
+  insecure = true
+
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+[registry."docker.io"]
+  mirrors = ["http://registry-test:5000/mirror"]
+
+                                      WTF https?
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+insecure-entitlements = [ "security.insecure" ]
+[registry."docker.io"]
+  insecure = true
+  mirrors = ["registry-test:5000/mirror"]
+[registry."registry-test:5000"]
+  http = true
+
+=> ERROR: failed to do request: Head "https://registry-test:5000/v2/mirror/library/busybox/manifests/1.36?ns=docker.io": http: server gave HTTP response to HTTPS client
+
+-- testbuilder1.toml --
+debug = true
+insecure-entitlements = [ "security.insecure" ]
+[registry."docker.io"]
+  mirrors = ["registry-test:5000/mirror"]
+  http = true
+  insecure = true
+[registry."registry-test:5000"]
+  http = true
+  insecure = true
+
+=> ERROR: WIP
+
+
+---
+
+https://www.docker.com/blog/how-to-use-your-own-registry-2/
+
+
+
+Build cannot export to registry on localhost
+https://github.com/docker/buildx/issues/94
+
+
+--push to local registry connection refused with /etc/host redirect 
+https://github.com/docker/buildx/issues/218
+
+Unable to pull from insecure registry
+https://github.com/docker/buildx/issues/1370
+
+BUILDKIT ignores "insecure-registries". server gave HTTP response to HTTPS client. x509: certificate error
+https://github.com/docker/buildx/issues/1642
+
+Buildkit in docker 18.09 won't allow insecure registry with self-signed TLS
+https://github.com/moby/moby/issues/38303
+
+[Dockerfile] BuildKit does not respect Docker Registry Mirrors defined in daemon.json
+https://github.com/moby/buildkit/issues/606

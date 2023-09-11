@@ -1,0 +1,9 @@
+# exit code, delimiter ...
+
+IFS=$'\n' read -d '' a b c < <(printf 'a\nb\nc\n')
+echo ret: $?
+echo "a: $a, b: $b, c: $c"
+
+IFS=$'\n' read -d '' -a k < <(printf 'a\nb\nc\n')
+echo ret: $?
+declare -p k

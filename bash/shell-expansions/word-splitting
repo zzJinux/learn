@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+: begin
+
+# Demonstrates "null argument removal"
+empty=
+for a in "" '' "$empty" $empty; do
+  echo "${a@A}"
+done
+
+: end

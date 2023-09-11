@@ -1,0 +1,59 @@
+Usage: swift upload [--changed] [--skip-identical] [--segment-size <size>]
+                    [--segment-container <container>] [--leave-segments]
+                    [--object-threads <thread>] [--segment-threads <threads>]
+                    [--meta <name:value>] [--header <header>] [--use-slo]
+                    [--use-dlo] [--ignore-checksum] [--skip-container-put]
+                    [--object-name <object-name>]
+                    <container> <file_or_directory> [<file_or_directory>] [...]
+
+Uploads specified files and directories to the given container.
+
+Positional arguments:
+  <container>           Name of container to upload to.
+  <file_or_directory>   Name of file or directory to upload. Specify multiple
+                        times for multiple uploads. If "-" is specified, reads
+                        content from standard input (--object-name is required
+                        in this case).
+
+Optional arguments:
+  -c, --changed         Only upload files that have changed since the last
+                        upload.
+  --skip-identical      Skip uploading files that are identical on both sides.
+  -S, --segment-size <size>
+                        Upload files in segments no larger than <size> (in
+                        Bytes) and then create a "manifest" file that will
+                        download all the segments as if it were the original
+                        file.
+  --segment-container <container>
+                        Upload the segments into the specified container. If
+                        not specified, the segments will be uploaded to a
+                        <container>_segments container to not pollute the
+                        main <container> listings.
+  --leave-segments      Indicates that you want the older segments of manifest
+                        objects left alone (in the case of overwrites).
+  --object-threads <threads>
+                        Number of threads to use for uploading full objects.
+                        Default is 10.
+  --segment-threads <threads>
+                        Number of threads to use for uploading object segments.
+                        Default is 10.
+  -m, --meta <name:value>
+                        Sets a meta data item. This option may be repeated.
+                        Example: -m Color:Blue -m Size:Large
+  -H, --header <header:value>
+                        Adds a customized request header. This option may be
+                        repeated. Example: -H "content-type:text/plain"
+                         -H "Content-Length: 4000".
+  --use-slo             When used in conjunction with --segment-size it will
+                        create a Static Large Object. Deprecated; this is now
+                        the default behavior when the cluster supports it.
+  --use-dlo             When used in conjunction with --segment-size it will
+                        create a Dynamic Large Object. May be useful with old
+                        swift clusters.
+  --ignore-checksum     Turn off checksum validation for uploads.
+  --skip-container-put  Assume all necessary containers already exist; don't
+                        automatically try to create them.
+  --object-name <object-name>
+                        Upload file and name object to <object-name> or upload
+                        dir and use <object-name> as object prefix instead of
+                        folder name.

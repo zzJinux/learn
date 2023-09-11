@@ -1,0 +1,10 @@
+## package-level tests
+
+Try:
+```
+tmpfile=$(mktemp)
+echo "OUTPUT_FILE=$tmpfile"
+OUTPUT_FILE=$tmpfile go test ./tpack1 ./tpack2
+```
+
+Pay attention to the PIDs printed and the output file.

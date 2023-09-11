@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+: begin
+
+# backslash escapes a character
+read a <<<'foo-\a\b\c\d\e-bar'
+echo "${a@A}"
+
+# <backslash><newline> sequence is interpreted as line continutation,
+# The seuqnce is removed before splitting the input into fields.
+read b <<<'foo\'$'\n''bar'
+echo "${b@A}"
+
+: end

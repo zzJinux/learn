@@ -1,0 +1,23 @@
+Can you convert a normal file to a slo manifest using PUT?
+
+# Upload a normal file whose content is that of the manifest
+curl -vL -X PUT "$STORAGE_URL"/adler-test/128B.dat \
+  --data-binary @manifest_put.json \
+  -H 'content-type: application/json' \
+  -H 'x-auth-token: '"$OS_TOKEN"
+
+# You cannot create a manifest without segment objects; The PUT request returns 404.
+
+# Upload segments 
+curl -vL -X PUT "$STORAGE_URL"/adler-test-segments/128B.dat_seg1 \
+  --data-binary @128B.dat_seg1 \
+  -H 'x-auth-token: '"$OS_TOKEN"
+curl -vL -X PUT "$STORAGE_URL"/adler-test-segments/128B.dat_seg2 \
+  --data-binary @128B.dat_seg2 \
+  -H 'x-auth-token: '"$OS_TOKEN"
+
+# Replace the normal file with the real manifest
+curl -vL -X PUT "$STORAGE_URL"/adler-test/128B.dat?multipart-manifest=put \
+  --data-binary @manifest_put.json \
+  -H 'content-type: application/json' \
+  -H 'x-auth-token: '"$OS_TOKEN"

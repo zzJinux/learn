@@ -1,0 +1,63 @@
+=== From the default bridge
+docker run --rm local/egress-inspector
+host.docker.internal=192.168.65.254
+gateway.docker.internal=192.168.65.254
+curl localhost:5678
+curl: (7) Failed to connect to localhost port 5678 after 0 ms: Couldn't connect to server
+curl host.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60410
+curl gateway.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60411
+
+=== From an user bridge
+docker run --rm --net learn-docker local/egress-inspector
+host.docker.internal=192.168.65.254
+gateway.docker.internal=192.168.65.254
+curl localhost:5678
+curl: (7) Failed to connect to localhost port 5678 after 0 ms: Couldn't connect to server
+curl host.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60412
+curl gateway.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60413
+
+=== From an user internal bridge
+docker run --rm --net learn-docker-internal local/egress-inspector
+host.docker.internal=;; communications error to 127.0.0.11#53: timed out ;; no servers could be reached
+gateway.docker.internal=;; communications error to 127.0.0.11#53: timed out ;; no servers could be reached
+curl localhost:5678
+curl: (7) Failed to connect to localhost port 5678 after 0 ms: Couldn't connect to server
+curl host.docker.internal:5678
+curl: (28) Resolving timed out after 1000 milliseconds
+curl gateway.docker.internal:5678
+curl: (28) Resolving timed out after 1000 milliseconds
+
+=== From the "host" network
+docker run --rm --net host local/egress-inspector
+host.docker.internal=192.168.65.254
+gateway.docker.internal=192.168.65.254
+curl localhost:5678
+curl: (7) Failed to connect to localhost port 5678 after 0 ms: Couldn't connect to server
+curl host.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60417
+curl gateway.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60418
+
+=== From the root ns network
+docker run --privileged --pid=host --rm local/egress-inspector nsenter -t 1 -u -n -i -- sh -c 
+  echo "host.docker.internal="$(dig +retry=0 +timeout=1 +short host.docker.internal); \
+  echo gateway.docker.internal=$(dig +retry=0 +timeout=1 +short gateway.docker.internal); \
+  echo curl localhost:5678; \
+  curl --no-progress-meter --connect-timeout 1 localhost:5678 2>&1; \
+  echo curl host.docker.internal:5678; \
+  curl --no-progress-meter --connect-timeout 1 host.docker.internal:5678 2>&1; \
+  echo curl gateway.docker.internal:5678; \
+  curl --no-progress-meter --connect-timeout 1 gateway.docker.internal:5678 2>&1;
+host.docker.internal=192.168.65.254
+gateway.docker.internal=192.168.65.254
+curl localhost:5678
+curl: (7) Failed to connect to localhost port 5678 after 0 ms: Couldn't connect to server
+curl host.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60419
+curl gateway.docker.internal:5678
+127.0.0.1:5678 <= 127.0.0.1:60420
+

@@ -1,0 +1,32 @@
+Create an empty file: truncate -s 256 filename
+
+sup() {
+  swift upload --use-slo --segment-container "$1"-segments -S $((1024*1024*2)) "$1" "$2"
+}
+
+sup64() {
+  swift upload --use-slo --segment-container "${@:(-2):1}"-segments -S 64 "$@"
+}
+
+sup128() {
+  swift upload --use-slo --segment-container "${@:(-2):1}"-segments -S 128 "$@"
+}
+
+sup1024() {
+  swift upload --use-slo --segment-container "${@:(-2):1}"-segments -S 1024 "$@"
+}
+
+
+topic: bash scripting
+
+Complete the following function:
+```
+aa() {
+  local opts
+  # TODO
+  command "${opts[@]}" "$@"
+}
+```
+
+1. If a double-dash is present, all the arguments to the left of the double-dash are treated as positional parameters, and all the arguments to the right of the double-dash are treated as named parameters.
+2. If a double-dash is not present, all the arguments are treated as positional parameters.
